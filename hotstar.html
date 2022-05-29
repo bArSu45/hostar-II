@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostar II</title>
+    <style>
+        body{
+           background-color: black; 
+            
+        }
+        #query{
+            text-align:right;
+            width: 100px;
+            height: 100px;
+        }
+        #movies{
+            /* height: 200px;
+            width: 206px; */
+            /* border: 1px solid red; */
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap:20px
+        }
+        
+        #movies img{
+            width: 300px;
+            height: 300px;
+            margin-left: 25px;
+        }
+        #movies p{
+            color: white;
+            font-size: 20px;
+            text-align: center;
+        }
+        #navbar{
+            display:flex;
+            justify-content:left;
+            height: auto;
+            
+            background: black;
+        }
+        #text{
+            display: flex;
+            justify-content:space-evenly;
+            width: 500px;
+            
+        }
+        #inp{
+            display: flex;
+            margin-left:500px;
+            color: rgb(9, 5, 5);
+            text-decoration:none;
+            border: 0px;
+            /* margin-top: 30px; */
+        }
+        h3{
+            font-size: 20px;
+            margin-top:35px;
+            margin-left: 10px;
+        }
+        h2{
+            margin-top: 33px;
+            margin-left: 10px;
+        }
+        h3,h2{
+            color: white;
+            cursor: pointer;
+            /* border: 1px solid white; */
+            width: 80px;
+        }
+        #inp input{
+            width: 250px;
+            height: 40px;
+            margin: 10px;
+            margin-top: 3opx;
+            
+        }
+        #query{
+            margin-top: 20px;
+            font-size: 25px;
+        }
+        #query >p{
+            border: 1px sloid white;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar">
+        <div id="text">
+            <img src="https://secure-media.hotstarext.com/web-assets/prod/images/brand-logos/disney-hotstar-logo-dark.svg"/>
+        <h3>TV</h3>
+        <h3>Movies</h3>
+        <h3>Sports</h3>
+        <h3>Disney+</h3>
+        <h2>Kids</h2>
+    </div>
+   <div id="inp">
+       
+        <input oninput="debounceFunction(main,1000)" type="text" id="query" placeholder="Search"/></div>
+</div>
+    <div id="movies"></div>
+</body>
+</html>
+<script>
+    var id;
+    async function displayMovie(q){
+        try{
+            //let url=`http://www.omdbapi.com/?s=${q}apikey=5ac51e94`
+            
+            var url=`http://www.omdbapi.com/?s=${q}&apikey=73af4def`;
+
+        var res= await fetch(url)
+        let data=await res.json();
+        return data.Search;
+        }catch(error){
+            console.log('error',error);
+        }
+       
+    }
+     async function main(){
+        var x=document.getElementById("query").value;
+        console.log(x)
+
+        let response=displayMovie(x);
+        let data=await response;
+       appendMovies(data);
+    }
+    let movies_div=document.getElementById("movies");
+
+    function appendMovies(movies){
+        //console.log(movies)
+        movies_div.innerHTML=null;
+        
+            console.log(movies)
+            if(movies===undefined){
+            return false;
+        }
+            movies.forEach(element => {
+                let box=document.createElement('div');
+
+                let p=document.createElement('p');
+                p.innerText="Poster: "+element.Title;
+
+                let img=document.createElement('img');
+                 img.src=element.Poster;
+
+                 let year=document.createElement('p');
+                 year.innerText="Year of release: "+element.Year;
+
+                 let imdbid=document.createElement('p')
+                 imdbid.innerText="ImdbID: "+element.imdbID;
+
+           box.append(img,p,year,imdbid);
+           movies_div.append(box)
+  });
+
+}
+function debounceFunction(func,delay){
+    if(id){
+        clearTimeout(id);
+    }
+   id= setTimeout(function(){
+        func();
+
+    },delay)
+}
+    
+</script>
